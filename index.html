@@ -84,8 +84,6 @@ async function saveCloud(){
 function updateAuthUI(){
  const signed=!!authSession;$('authEmail').style.display=signed?'none':'inline-block';$('signInBtn').style.display=signed?'none':'inline-block';$('signOutBtn').style.display=signed?'inline-block':'none';$('authStatus').textContent=signed?'로그인 중: '+(authSession.user.email||'내 계정'):'이메일로 로그인 링크를 받아 나의 정원을 이어보세요.';setSyncStatus(signed?'☁️ 클라우드 동기화 연결됨':'로그인 전: 이 기기에만 저장됩니다.')
 }
- const signed=!!authSession;$('authEmail').style.display=signed?'none':'inline-block';$('authPassword').style.display=signed?'none':'inline-block';$('signInBtn').style.display=signed?'none':'inline-block';$('signUpBtn').style.display=signed?'none':'inline-block';$('signOutBtn').style.display=signed?'inline-block':'none';$('authStatus').textContent=signed?'로그인 중: '+(authSession.user.email||'내 계정'):'로그인하면 어디서든 나의 정원을 이어볼 수 있어요.';setSyncStatus(signed?'☁️ 클라우드 동기화 연결됨':'로그인 전: 이 기기에만 저장됩니다.')
-}
 async function loadCloud(){
  if(!supabase||!authSession)return;
  isLoadingCloud=true;setSyncStatus('클라우드 기록 불러오는 중…');
