@@ -35,7 +35,7 @@ button,select,input,textarea{font:inherit}button{cursor:pointer;border:0}.btn{bo
 <header class="top"><div><div class="kicker">MY LITTLE EMOTION GARDEN</div><div class="brand">마음의 정원 🌱</div><div class="sub">오늘의 마음을 자유롭게 피워보세요.</div></div>
 <button class="btn bubblebtn" id="aboutBtn" aria-label="마음의 정원 소개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-2 2v-9.5a7.5 7.5 0 0 1 7.5-7.5h2A7.5 7.5 0 0 1 20 11.5Z"/></svg>소개</button></header>
 <div class="authbar" id="authBar"><span class="authstatus" id="authStatus">이메일로 로그인 링크를 받아 나의 정원을 이어보세요.</span><input id="authEmail" type="email" autocomplete="email" placeholder="이메일"><button class="auth-primary" id="signInBtn">로그인 링크 보내기</button><button class="auth-quiet" id="signOutBtn" style="display:none">로그아웃</button><span id="syncStatus">로그인 전: 이 기기에만 저장됩니다.</span></div>
-<div class="bar"><b>나의 감정 풍경</b><div class="row"><select id="theme"><option value="grass">🌿 초원</option><option value="sea">🌊 바다 속</option><option value="space">🌌 우주</option><optgroup label="나만의 테마" id="customThemeOptions"></optgroup></select><button class="btn" id="newThemeBtn">＋ 테마 만들기</button><button class="btn" id="deleteTheme" style="display:none;color:#a34e4e">선택 테마 삭제</button></div></div>
+<div class="bar"><b>나의 감정 풍경</b><div class="row"><select id="theme"><option value="grass">🌿 초원</option><option value="sea">🌊 바다 속</option><option value="space">🌌 우주</option><optgroup label="나만의 테마" id="customThemeOptions"></optgroup></select><button class="btn" id="newThemeBtn">＋ 테마 만들기</button><button class="btn" id="editThemeBtn" style="display:none">선택 테마 수정</button><button class="btn" id="deleteTheme" style="display:none;color:#a34e4e">선택 테마 삭제</button></div></div>
 <div id="customPanel" class="panel"><b>나만의 테마 만들기</b><input id="themeName" class="field" placeholder="테마 이름"><div class="row">배경 색상 <input id="themeColor" type="color" value="#d9c9ed"><button id="saveTheme" class="primary">테마 추가하기</button></div><small style="color:#77847b">만든 테마는 테마 목록에 계속 저장돼요.</small></div>
 <section id="scene" class="scene grass"><div class="tag" id="sceneTag">✧ 나의 마음이 머무는 곳</div><div class="float" id="floating"></div><div id="empty" style="position:absolute;inset:0;display:grid;place-items:center;text-align:center;pointer-events:none"><div style="background:#ffffffad;padding:20px;border-radius:16px"><div style="font-size:30px">🌼</div><b>아직 피어나지 않은 마음</b><div class="sub">첫 번째 감정을 기록해 보세요.</div></div></div><div class="hint">마음이 둥둥 떠다니는 공간</div></section>
 <div class="actions"><button class="primary" id="writeBtn">＋ 감정 기록하기</button><button class="btn" id="paintBtn">✎ 그림 그리기</button></div>
@@ -60,11 +60,11 @@ button,select,input,textarea{font:inherit}button{cursor:pointer;border:0}.btn{bo
 (()=>{
 const $=id=>document.getElementById(id),emojis={행복:'😊',슬픔:'🌧️',분노:'🔥',불안:'☁️',평온:'🍃',희망:'🌈'};
 let records=[],emotion='행복',image='',transparent=false,current=null,tool='pen',undoStack=[],undoIndex=-1,theme='grass',customThemes=[],bundles=[],bundleFilter='all',selectedFloatId=null;
-const canvas=$('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});let canvasZoom=1,canvasPanX=0,canvasPanY=0;canvas.style.transformOrigin='0 0';function setCanvasZoom(v,focusX,focusY){const rect=canvas.getBoundingClientRect(),oldZoom=canvasZoom;const fx=focusX??(rect.left+rect.width/2),fy=focusY??(rect.top+rect.height/2);const baseLeft=rect.left-canvasPanX,baseTop=rect.top-canvasPanY;const localX=(fx-rect.left)/oldZoom,localY=(fy-rect.top)/oldZoom;canvasZoom=Math.max(.75,Math.min(3,v));canvasPanX=fx-baseLeft-localX*canvasZoom;canvasPanY=fy-baseTop-localY*canvasZoom;canvas.style.transform='translate('+canvasPanX+'px,'+canvasPanY+'px) scale('+canvasZoom+')';$('zoomLabel').textContent=Math.round(canvasZoom*100)+'%'}$('zoomIn').onclick=()=>setCanvasZoom(canvasZoom+.25);$('zoomOut').onclick=()=>setCanvasZoom(canvasZoom-.25);$('zoomReset').onclick=()=>{canvasZoom=1;canvasPanX=canvasPanY=0;canvas.style.transform='translate(0px,0px) scale(1)';$('zoomLabel').textContent='100%'};
+let editingThemeId=null;const canvas=$('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});let canvasZoom=1,canvasPanX=0,canvasPanY=0;canvas.style.transformOrigin='0 0';function setCanvasZoom(v,focusX,focusY){const rect=canvas.getBoundingClientRect(),oldZoom=canvasZoom;const fx=focusX??(rect.left+rect.width/2),fy=focusY??(rect.top+rect.height/2);const baseLeft=rect.left-canvasPanX,baseTop=rect.top-canvasPanY;const localX=(fx-rect.left)/oldZoom,localY=(fy-rect.top)/oldZoom;canvasZoom=Math.max(.75,Math.min(3,v));canvasPanX=fx-baseLeft-localX*canvasZoom;canvasPanY=fy-baseTop-localY*canvasZoom;canvas.style.transform='translate('+canvasPanX+'px,'+canvasPanY+'px) scale('+canvasZoom+')';$('zoomLabel').textContent=Math.round(canvasZoom*100)+'%'}$('zoomIn').onclick=()=>setCanvasZoom(canvasZoom+.25);$('zoomOut').onclick=()=>setCanvasZoom(canvasZoom-.25);$('zoomReset').onclick=()=>{canvasZoom=1;canvasPanX=canvasPanY=0;canvas.style.transform='translate(0px,0px) scale(1)';$('zoomLabel').textContent='100%'};
 try{
  records=JSON.parse(localStorage.getItem('emotionGardenRecords')||'[]');
  const old=JSON.parse(localStorage.getItem('emotionGardenTheme')||'null');
- customThemes=JSON.parse(localStorage.getItem('emotionGardenThemes')||'[]');
+ customThemes=JSON.parse(localStorage.getItem('emotionGardenThemes')||'[]');const savedPalette=JSON.parse(localStorage.getItem('emotionGardenPalette')||'{}');if(savedPalette.drawColor)$('color').value=savedPalette.drawColor;if(savedPalette.themeColor)$('themeColor').value=savedPalette.themeColor;
  bundles=JSON.parse(localStorage.getItem('emotionGardenBundles')||'[]');
  if(!customThemes.length&&old&&old.name)customThemes.push({id:'custom-'+Date.now(),name:old.name,color:old.color||'#d9c9ed'});
  records.forEach(r=>{if(!r.themeId)r.themeId='grass'});
@@ -112,7 +112,7 @@ function populateThemes(){
 }
 function applyTheme(){
  const s=$('scene'),custom=getTheme(theme);
- $('deleteTheme').style.display=custom?'inline-flex':'none';
+ $('deleteTheme').style.display=custom?'inline-flex':'none';$('editThemeBtn').style.display=custom?'inline-flex':'none';
  if(custom){s.className='scene custom';s.style.setProperty('--custom',custom.color);$('sceneTag').textContent='✧ '+custom.name}
  else{s.className='scene '+theme;s.style.removeProperty('--custom');$('sceneTag').textContent='✧ 나의 마음이 머무는 곳'}
  render();
@@ -184,7 +184,7 @@ $('theme').onchange=()=>{
  const selected=$('theme').value;
  $('customPanel').classList.remove('show');theme=selected;bundleFilter='all';applyTheme();
 };
-$('newThemeBtn').onclick=()=>{$('customPanel').classList.toggle('show');$('themeName').focus()};
+function savePalettePrefs(){try{localStorage.setItem('emotionGardenPalette',JSON.stringify({drawColor:$('color').value,themeColor:$('themeColor').value}))}catch(e){}}$('color').addEventListener('input',savePalettePrefs);$('themeColor').addEventListener('input',savePalettePrefs);$('newThemeBtn').onclick=()=>{editingThemeId=null;$('themeName').value='';$('themeColor').value=JSON.parse(localStorage.getItem('emotionGardenPalette')||'{}').themeColor||'#d9c9ed';$('saveTheme').textContent='테마 추가하기';$('customPanel').classList.toggle('show');$('themeName').focus()};$('editThemeBtn').onclick=()=>{const t=getTheme(theme);if(!t)return;editingThemeId=t.id;$('themeName').value=t.name;$('themeColor').value=t.color||'#d9c9ed';$('saveTheme').textContent='수정 내용 저장';$('customPanel').classList.add('show');$('themeName').focus()};
 $('deleteTheme').onclick=()=>{
  const selected=getTheme(theme);if(!selected)return;
  if(!confirm('「'+selected.name+'」 테마를 삭제할까요? 이 테마에 있던 감정 기록은 초원으로 옮겨집니다.'))return;
@@ -200,9 +200,9 @@ $('resetAll').onclick=()=>{
 $('saveTheme').onclick=()=>{
  const name=$('themeName').value.trim();
  if(!name){alert('테마 이름을 입력해 주세요.');$('themeName').focus();return}
- const id='custom-'+Date.now();
- customThemes.push({id,name,color:$('themeColor').value});
- theme=id;populateThemes();$('theme').value=id;$('themeName').value='';
+ if(editingThemeId){const t=getTheme(editingThemeId);if(t){t.name=name;t.color=$('themeColor').value;theme=t.id}}
+ else{const id='custom-'+Date.now();customThemes.push({id,name,color:$('themeColor').value});theme=id}
+ editingThemeId=null;savePalettePrefs();$('saveTheme').textContent='테마 추가하기';populateThemes();$('theme').value=theme;$('themeName').value='';
  $('customPanel').classList.remove('show');persist();applyTheme();
 };
 $('theme').value='grass';populateThemes();applyTheme();choose('pen');
