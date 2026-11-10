@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>마음의 정원</title>
+<style>
+:root{font-family:Arial,"Noto Sans KR",sans-serif;color:#263b32;background:#fafbf8}*{box-sizing:border-box}
+body{margin:0;padding:28px 16px}.app{max-width:900px;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}
+.kicker{font-size:11px;letter-spacing:2px;color:#7c9083}.brand{font-size:28px;font-weight:700;margin-top:5px}.sub{font-size:13px;color:#718176;margin-top:5px}
+button,select,input,textarea{font:inherit}button{cursor:pointer;border:0}.btn{border:1px solid #dce5dc;border-radius:12px;background:white;padding:10px 14px;color:#345344}.primary{background:#527c68;color:white;border-radius:12px;padding:12px 16px}
+.bubblebtn{display:flex;align-items:center;gap:8px}.bubblebtn svg{width:22px;height:22px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:14px 0}.bar select,.field{padding:10px;border:1px solid #dce5dc;border-radius:10px;background:white;color:#263b32}
+.scene{height:430px;border-radius:20px;position:relative;overflow:hidden;isolation:isolate}
+.grass{background:linear-gradient(#c9e9d4,#e7edc7 60%,#b8d9a4)}.sea{background:linear-gradient(#a6dce8,#4cacc2 60%,#176d8a)}.space{background:radial-gradient(ellipse at 50% 110%,#574c91,#171b40 65%,#10152e)}
+.custom{background:linear-gradient(145deg,var(--custom),#fff9)}
+.tag{position:absolute;top:13px;left:13px;padding:8px 12px;border-radius:20px;background:#ffffffb8;font-size:12px;color:#36534b}
+.hint{position:absolute;bottom:13px;right:13px;padding:8px 12px;border-radius:20px;background:#ffffffb8;font-size:11px;color:#36534b}
+.float{position:absolute;inset:0}.floating-item{position:absolute;width:115px;height:115px;display:flex;align-items:center;justify-content:center;flex-direction:column;animation:float var(--float-duration,11s) ease-in-out infinite;animation-delay:var(--float-delay,0s);cursor:pointer;will-change:transform}.floating-item.art{background:transparent!important;box-shadow:none!important;padding:0;border:0}.floating-item.art img{width:100%;height:100%;object-fit:contain;background:transparent}.floating-item.photo{border-radius:0;padding:0;background:transparent!important;box-shadow:none!important}.floating-item.photo img{width:100%;height:100%;object-fit:contain;border-radius:0;background:transparent!important}.floating-item .emoji{font-size:28px}.floating-item .caption{font-size:11px;background:#ffffffbb;color:#36534b;padding:3px 9px;border-radius:20px;margin-top:3px}
+@keyframes float{0%{transform:translate(0,0) rotate(0deg)}18%{transform:translate(var(--drift-x1,5px),calc(var(--drift-y1,-9px))) rotate(var(--tilt1,1deg))}43%{transform:translate(var(--drift-x2,-7px),var(--drift-y2,4px)) rotate(var(--tilt2,-1.5deg))}67%{transform:translate(var(--drift-x3,8px),var(--drift-y3,-5px)) rotate(var(--tilt3,1.2deg))}86%{transform:translate(var(--drift-x4,-4px),var(--drift-y4,7px)) rotate(var(--tilt4,-.8deg))}100%{transform:translate(0,0) rotate(0deg)}}
+.actions{display:flex;gap:10px;margin:14px 0}.actions>*{flex:1}.section{display:flex;justify-content:space-between;margin:22px 0 10px;font-weight:600;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px}.record{border:1px solid #e0e8df;border-radius:13px;background:white;overflow:hidden;text-align:left;color:#263b32}.record img{width:100%;height:105px;object-fit:contain}.record .info{padding:10px}.record p{font-size:12px;color:#77847b;margin:6px 0 0;overflow:hidden}
+.bottom-tools{position:fixed;right:18px;bottom:18px;z-index:10;display:flex;gap:8px;align-items:center}.bottom-tools button{box-shadow:0 4px 16px #20382b22}.danger{border:1px solid #ead6d6;background:#fff;color:#a34e4e;border-radius:12px;padding:10px 13px}.bundlebar{margin:18px 0 8px;padding:13px;border:1px solid #e0e8df;border-radius:14px;background:#fff}.bundlehead{display:flex;align-items:center;justify-content:space-between;gap:10px}.bundlechips{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.bundlechips .tool.active{background:#527c68;color:white}.note{background:#f0f5ef;border-radius:13px;padding:14px;font-size:12px;line-height:1.7;color:#63766a;margin-top:18px}
+.panel{display:none;background:#f3f6f2;border:1px solid #dce5dc;border-radius:13px;padding:13px;margin:10px 0}.panel.show{display:block}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.field{width:100%;margin:5px 0}.modal{position:fixed;inset:0;background:#0008;z-index:20;display:flex;align-items:center;justify-content:center;padding:14px}.modal.hidden{display:none}.modalbox{background:white;border-radius:18px;padding:19px;width:min(480px,100%);max-height:92vh;overflow:auto;color:#263b32;position:relative}.modalhead{display:flex;align-items:center;justify-content:space-between;gap:10px}.x{width:40px;height:40px;border-radius:50%;background:#f1f4f0;font-size:22px;z-index:2}.modalbox button{pointer-events:auto}.copy{font-size:14px;line-height:1.8}.copy .topic{background:#f2f6f1;border-radius:12px;padding:12px;margin:10px 0}.tool{padding:8px 10px;border:1px solid #dce5dc;border-radius:9px;background:white;font-size:12px}.tool.active{background:#527c68;color:white}
+canvas{width:100%;height:auto;border-radius:10px;touch-action:none;background-color:white;background-image:linear-gradient(45deg,#ddd 25%,transparent 25%),linear-gradient(-45deg,#ddd 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ddd 75%),linear-gradient(-45deg,transparent 75%,#ddd 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
+@media(max-width:520px){.bottom-tools{right:10px;bottom:10px}.bottom-tools button{font-size:12px;padding:9px 10px}body{padding:18px 12px}.brand{font-size:24px}.scene{height:370px}.floating-item{width:92px;height:92px}}
+
+.authbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin:-8px 0 18px;padding:10px 12px;background:#f1f6f0;border:1px solid #dfe9df;border-radius:14px}
+.authbar input{width:min(220px,38vw);min-width:110px;padding:9px;border:1px solid #dce5dc;border-radius:9px;background:#fff;color:#263b32}
+.authbar .authstatus{font-size:12px;color:#63766a;margin-right:auto}.authbar button{padding:9px 12px;border-radius:9px}.authbar .auth-primary{background:#527c68;color:white}.authbar .auth-quiet{background:white;border:1px solid #dce5dc;color:#345344}
+#syncStatus{font-size:11px;color:#728276;min-width:100%;text-align:right}
+@media(max-width:520px){.authbar{justify-content:flex-start}.authbar input{flex:1;width:100%;min-width:0}.authbar .authstatus{width:100%}}
+</style>
+</head>
+<body><main class="app">
+<header class="top"><div><div class="kicker">MY LITTLE EMOTION GARDEN</div><div class="brand">마음의 정원 🌱</div><div class="sub">오늘의 마음을 자유롭게 피워보세요.</div></div>
+<button class="btn bubblebtn" id="aboutBtn" aria-label="마음의 정원 소개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-2 2v-9.5a7.5 7.5 0 0 1 7.5-7.5h2A7.5 7.5 0 0 1 20 11.5Z"/></svg>소개</button></header>
+<div class="authbar" id="authBar"><span class="authstatus" id="authStatus">로그인하면 어디서든 나의 정원을 이어볼 수 있어요.</span><input id="authEmail" type="email" autocomplete="email" placeholder="이메일"><input id="authPassword" type="password" autocomplete="current-password" placeholder="비밀번호 (6자 이상)"><button class="auth-primary" id="signInBtn">로그인</button><button class="auth-quiet" id="signUpBtn">회원가입</button><button class="auth-quiet" id="signOutBtn" style="display:none">로그아웃</button><span id="syncStatus">로그인 전: 이 기기에만 저장됩니다.</span></div>
+<div class="bar"><b>나의 감정 풍경</b><div class="row"><select id="theme"><option value="grass">🌿 초원</option><option value="sea">🌊 바다 속</option><option value="space">🌌 우주</option><optgroup label="나만의 테마" id="customThemeOptions"></optgroup></select><button class="btn" id="newThemeBtn">＋ 테마 만들기</button><button class="btn" id="deleteTheme" style="display:none;color:#a34e4e">선택 테마 삭제</button></div></div>
+<div id="customPanel" class="panel"><b>나만의 테마 만들기</b><input id="themeName" class="field" placeholder="테마 이름"><div class="row">배경 색상 <input id="themeColor" type="color" value="#d9c9ed"><button id="saveTheme" class="primary">테마 추가하기</button></div><small style="color:#77847b">만든 테마는 테마 목록에 계속 저장돼요.</small></div>
+<section id="scene" class="scene grass"><div class="tag" id="sceneTag">✧ 나의 마음이 머무는 곳</div><div class="float" id="floating"></div><div id="empty" style="position:absolute;inset:0;display:grid;place-items:center;text-align:center;pointer-events:none"><div style="background:#ffffffad;padding:20px;border-radius:16px"><div style="font-size:30px">🌼</div><b>아직 피어나지 않은 마음</b><div class="sub">첫 번째 감정을 기록해 보세요.</div></div></div><div class="hint">마음이 둥둥 떠다니는 공간</div></section>
+<div class="actions"><button class="primary" id="writeBtn">＋ 감정 기록하기</button><button class="btn" id="paintBtn">✎ 그림 그리기</button></div>
+<div class="bundlebar"><div class="bundlehead"><b>🎒 감정 보따리</b><button class="btn" id="addBundle">＋ 보따리 만들기</button></div><div class="bundlechips" id="bundleChips"><button class="tool active" data-bundle-filter="all">전체 감정</button></div></div>
+<div class="section"><span>나의 감정 모음</span><span id="count" style="color:#829087;font-weight:400">0개의 기록</span></div><div class="grid" id="records"></div>
+<div class="note">보따리는 이미 기록한 감정을 나중에 골라 담아 정리하는 공간이에요. 감정 카드를 눌러 보따리에 넣거나 빼낼 수 있어요.<br>어떤 감정이든 괜찮아요. 말로 표현하기 어려운 마음도 그림으로 남겨보세요. 로그인하면 기록이 개인 클라우드에 동기화되고, 로그인 전에는 현재 기기에 저장됩니다.</div>
+</main>
+<div class="bottom-tools"><button class="danger" id="resetAll">전체 초기화</button></div>
+<div class="modal hidden" id="aboutModal" role="dialog" aria-modal="true"><div class="modalbox"><div class="modalhead"><b style="font-size:18px">💬 마음의 정원은 왜 존재할까요?</b><button class="x" id="aboutX" aria-label="닫기">×</button></div><div class="copy">
+<p>사람은 살아가면서 갈등과 상처, 슬픔과 불안 등 다양한 감정을 경험합니다. 하지만 이러한 감정을 항상 말로 표현할 수 있는 것은 아닙니다.</p><p>이 공간은 예술이 감정을 표현하고 마음을 이해하는 창구가 될 수 있다는 생각에서 시작되었습니다.</p>
+<div class="topic"><b>1. 감정의 표현 🎨</b><br>말로 표현하기 어려운 감정과 상처를 그림과 사진으로 표현하고 기록할 수 있습니다. 예술은 마음속에 담긴 감정을 밖으로 꺼내는 방법이 됩니다.</div>
+<div class="topic"><b>2. 소통의 창구 💬</b><br>예술은 자신의 감정을 다른 사람에게 전달하고 서로의 마음을 이해할 수 있도록 도와줍니다. 그림과 글은 사람과 사람을 이어주는 소통의 다리가 됩니다.</div>
+<div class="topic"><b>3. 이상과 희망 🌈</b><br>예술은 힘든 현실 속에서도 자신이 바라는 모습과 희망을 표현하게 해줍니다. 새로운 가능성을 상상하고 긍정적인 미래를 그려볼 수 있게 합니다.</div>
+<p>이 정원은 그림을 그리고, 사진을 올리고, 글을 쓰는 과정을 통해 자신의 감정을 돌아보고 이해할 수 있도록 만들어졌습니다.</p><div class="topic" style="text-align:center">🌱 <b>어떤 감정이든 괜찮아요.</b><br>당신의 마음은 표현될 가치가 있어요.</div><small style="color:#849087">탐구 주제: 갈등을 겪은 인간들이 예술을 이용하는 방법에 대하여</small></div><button class="primary" id="aboutDone" style="width:100%;margin-top:12px">닫기</button></div></div>
+<div class="modal hidden" id="editModal"><div class="modalbox"><div class="modalhead"><b id="editTitle">감정 기록하기</b><button class="x" id="editX">×</button></div>
+<div id="writePanel"><label>오늘의 감정</label><div class="row" id="emotions" style="margin:8px 0"><button class="tool" data-em="행복">😊 행복</button><button class="tool" data-em="슬픔">🌧️ 슬픔</button><button class="tool" data-em="분노">🔥 분노</button><button class="tool" data-em="불안">☁️ 불안</button><button class="tool" data-em="평온">🍃 평온</button><button class="tool" data-em="희망">🌈 희망</button></div><input id="otherEmotion" class="field" placeholder="다른 감정 직접 입력"><label>나의 생각과 이야기</label><textarea id="thought" class="field" rows="4" placeholder="지금 어떤 생각이 드나요?"></textarea><label>그림이나 사진 첨부하기</label><input id="upload" type="file" accept="image/*" class="field"><img id="preview" style="display:none;max-height:170px;max-width:100%;object-fit:contain"><div class="row" style="margin-top:12px"><button id="drawFromWrite" class="btn">✎ 직접 그림 그리기</button><button id="saveRecord" class="primary" style="flex:1">마음 피우기 🌱</button></div></div>
+<div id="paintPanel" style="display:none"><p style="font-size:12px;color:#77847b">체커보드 부분은 투명한 배경입니다.</p><div class="row" style="margin:10px 0"><button class="tool active" data-tool="pen">✎ 연필</button><button class="tool" data-tool="eraser">◻ 지우개</button><button class="tool" data-tool="bucket">🪣 페인트통</button><button class="tool" data-tool="picker">💧 스포이드</button><button id="undo" class="tool">↶ 실행 취소</button><button id="redo" class="tool">↷ 다시 실행</button></div><div class="row" style="margin-bottom:10px;font-size:13px">색상 <input id="color" type="color" value="#527c68"> 굵기 <input id="size" type="range" min="1" max="30" value="5"></div><canvas id="canvas" width="640" height="420"></canvas><div class="row" style="margin-top:10px"><button id="clearCanvas" class="btn">새 그림</button><button id="useDrawing" class="primary" style="flex:1">투명 그림 사용하기</button></div></div></div></div>
+<div class="modal hidden" id="detailModal"><div class="modalbox"><div class="modalhead"><b>나의 마음 한 조각</b><button class="x" id="detailX">×</button></div><div id="detailContent" style="margin-top:12px"></div><label style="display:block;margin-top:12px">이 기록을 보따리에 정리하기</label><div class="row"><select id="assignBundle" class="field" style="flex:1"><option value="">보따리에 넣지 않기</option></select><button id="saveBundleAssignment" class="btn">담기</button></div><div class="row" style="margin-top:15px"><button id="deleteRecord" class="btn" style="color:#b65b5b;flex:1">감정 지우기</button><button id="detailDone" class="primary" style="flex:1">닫기</button></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
+<script>
+(()=>{
+const $=id=>document.getElementById(id),emojis={행복:'😊',슬픔:'🌧️',분노:'🔥',불안:'☁️',평온:'🍃',희망:'🌈'};
+let records=[],emotion='행복',image='',transparent=false,current=null,tool='pen',undoStack=[],undoIndex=-1,theme='grass',customThemes=[],bundles=[],bundleFilter='all';
+const canvas=$('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
+try{
+ records=JSON.parse(localStorage.getItem('emotionGardenRecords')||'[]');
+ const old=JSON.parse(localStorage.getItem('emotionGardenTheme')||'null');
+ customThemes=JSON.parse(localStorage.getItem('emotionGardenThemes')||'[]');
+ bundles=JSON.parse(localStorage.getItem('emotionGardenBundles')||'[]');
+ if(!customThemes.length&&old&&old.name)customThemes.push({id:'custom-'+Date.now(),name:old.name,color:old.color||'#d9c9ed'});
+ records.forEach(r=>{if(!r.themeId)r.themeId='grass'});
+}catch(e){}
+let supabase=null,authSession=null,cloudSaveTimer=null,isLoadingCloud=false;
+const setSyncStatus=(message)=>{$('syncStatus').textContent=message};
+function persist(){
+ try{localStorage.setItem('emotionGardenRecords',JSON.stringify(records));localStorage.setItem('emotionGardenThemes',JSON.stringify(customThemes));localStorage.setItem('emotionGardenBundles',JSON.stringify(bundles))}catch(e){alert('저장 공간이 부족합니다. 이미지 크기를 줄여주세요.')}
+ if(authSession&&supabase&&!isLoadingCloud){setSyncStatus('변경사항 저장 중…');clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(saveCloud,650)}
+}
+async function saveCloud(){
+ if(!supabase||!authSession||isLoadingCloud)return;
+ const payload={user_id:authSession.user.id,records,custom_themes:customThemes,bundles,updated_at:new Date().toISOString()};
+ const {error}=await supabase.from('emotion_garden_data').upsert(payload,{onConflict:'user_id'});
+ if(error){console.error(error);setSyncStatus('클라우드 저장 실패: 연결 설정을 확인해 주세요.')}else setSyncStatus('☁️ 클라우드에 안전하게 저장됨')
+}
+function updateAuthUI(){
+ const signed=!!authSession;$('authEmail').style.display=signed?'none':'inline-block';$('authPassword').style.display=signed?'none':'inline-block';$('signInBtn').style.display=signed?'none':'inline-block';$('signUpBtn').style.display=signed?'none':'inline-block';$('signOutBtn').style.display=signed?'inline-block':'none';$('authStatus').textContent=signed?'로그인 중: '+(authSession.user.email||'내 계정'):'로그인하면 어디서든 나의 정원을 이어볼 수 있어요.';setSyncStatus(signed?'☁️ 클라우드 동기화 연결됨':'로그인 전: 이 기기에만 저장됩니다.')
+}
+async function loadCloud(){
+ if(!supabase||!authSession)return;
+ isLoadingCloud=true;setSyncStatus('클라우드 기록 불러오는 중…');
+ const {data,error}=await supabase.from('emotion_garden_data').select('records,custom_themes,bundles').eq('user_id',authSession.user.id).maybeSingle();
+ if(error){console.error(error);setSyncStatus('클라우드 불러오기 실패: Supabase 설정/RLS를 확인해 주세요.');isLoadingCloud=false;return}
+ if(data){records=Array.isArray(data.records)?data.records:[];customThemes=Array.isArray(data.custom_themes)?data.custom_themes:[];bundles=Array.isArray(data.bundles)?data.bundles:[];records.forEach(r=>{if(!r.themeId)r.themeId='grass'});localStorage.setItem('emotionGardenRecords',JSON.stringify(records));localStorage.setItem('emotionGardenThemes',JSON.stringify(customThemes));localStorage.setItem('emotionGardenBundles',JSON.stringify(bundles));}
+ else { // 첫 로그인: 이 기기에 있던 기존 기록을 계정으로 옮김
+   isLoadingCloud=false;await saveCloud();isLoadingCloud=true;
+ }
+ isLoadingCloud=false;populateThemes();$('theme').value=customThemes.some(t=>t.id===theme)?theme:'grass';if(!$('theme').value)theme='grass';else theme=$('theme').value;applyTheme();render();setSyncStatus('☁️ 클라우드 동기화 완료');
+}
+async function initCloudAuth(){
+ const cfg=window.MAEUM_SUPABASE_CONFIG||{};
+ if(!window.supabase||!cfg.url||!cfg.anonKey||cfg.url.includes('YOUR_')){setSyncStatus('Supabase 설정 전: 로컬 저장 모드');return}
+ supabase=window.supabase.createClient(cfg.url,cfg.anonKey);
+ const {data:{session}}=await supabase.auth.getSession();authSession=session;updateAuthUI();if(session)await loadCloud();
+ supabase.auth.onAuthStateChange((_event,session)=>{authSession=session;updateAuthUI();if(session){setTimeout(()=>loadCloud(),0)}else{setSyncStatus('로그아웃됨: 이 기기에 저장된 기록만 표시됩니다.')}})
+}
+$('signUpBtn').onclick=async()=>{if(!supabase){alert('먼저 supabase-config.js에 Supabase 프로젝트 정보를 입력해야 해요.');return}const email=$('authEmail').value.trim(),password=$('authPassword').value;if(!email||password.length<6){alert('이메일과 6자 이상의 비밀번호를 입력해 주세요.');return}const {data,error}=await supabase.auth.signUp({email,password});if(error){alert('회원가입 실패: '+error.message);return}if(data.session){authSession=data.session;updateAuthUI();await loadCloud()}else alert('가입 확인 메일을 보냈어요. 이메일 인증 후 로그인해 주세요.')};
+$('signInBtn').onclick=async()=>{if(!supabase){alert('먼저 supabase-config.js에 Supabase 프로젝트 정보를 입력해야 해요.');return}const {data,error}=await supabase.auth.signInWithPassword({email:$('authEmail').value.trim(),password:$('authPassword').value});if(error){alert('로그인 실패: '+error.message);return}authSession=data.session;updateAuthUI();await loadCloud()};
+$('signOutBtn').onclick=async()=>{if(supabase)await supabase.auth.signOut();authSession=null;updateAuthUI()};
+function show(id){$(id).classList.remove('hidden')}function hide(id){$(id).classList.add('hidden')}
+function getTheme(id){return customThemes.find(t=>t.id===id)}
+function populateThemes(){
+ const group=$('customThemeOptions');group.innerHTML='';
+ customThemes.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent='🎨 '+t.name;group.append(o)});
+}
+function applyTheme(){
+ const s=$('scene'),custom=getTheme(theme);
+ $('deleteTheme').style.display=custom?'inline-flex':'none';
+ if(custom){s.className='scene custom';s.style.setProperty('--custom',custom.color);$('sceneTag').textContent='✧ '+custom.name}
+ else{s.className='scene '+theme;s.style.removeProperty('--custom');$('sceneTag').textContent='✧ 나의 마음이 머무는 곳'}
+ render();
+}
+function render(){
+ $('floating').innerHTML='';$('records').innerHTML='';
+ renderBundleUI();
+ const visible=records.filter(r=>(r.themeId||'grass')===theme&&(bundleFilter==='all'||(r.bundleId||'')===bundleFilter));
+ $('empty').style.display=visible.length?'none':'grid';
+ $('count').textContent=visible.length+'개의 기록';
+ visible.forEach((r,i)=>{
+ const b=document.createElement('button');b.className='floating-item '+(r.transparent?'art':'photo');b.style.left=(r.xPct??(5+(i*29)%79))+'%';b.style.top=(r.yPct??(22+(i*37)%55))+'%';b.style.touchAction='none';b.style.setProperty('--float-duration',(8+Math.random()*10).toFixed(1)+'s');b.style.setProperty('--float-delay',(-Math.random()*12).toFixed(1)+'s');for(let k=1;k<=4;k++){b.style.setProperty('--drift-x'+k,((Math.random()*20)-10).toFixed(1)+'px');b.style.setProperty('--drift-y'+k,((Math.random()*24)-12).toFixed(1)+'px');b.style.setProperty('--tilt'+k,((Math.random()*5)-2.5).toFixed(1)+'deg')}
+ if(r.image){const im=document.createElement('img');im.src=r.image;im.alt='감정 그림';b.append(im)}else{const x=document.createElement('span');x.className='emoji';x.textContent=emojis[r.emotion]||'💭';b.append(x)}
+ const c=document.createElement('span');c.className='caption';c.textContent=r.emotion;b.append(c)
+ let drag=null, moved=false;
+ b.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;e.preventDefault();moved=false;const rect=$('scene').getBoundingClientRect(),br=b.getBoundingClientRect();drag={sx:e.clientX,sy:e.clientY,left:br.left-rect.left,top:br.top-rect.top,rect};b.style.animationPlayState='paused';b.setPointerCapture(e.pointerId)});
+ b.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;if(Math.abs(dx)+Math.abs(dy)>4)moved=true;if(moved){const maxX=Math.max(0,drag.rect.width-b.offsetWidth),maxY=Math.max(0,drag.rect.height-b.offsetHeight);const x=Math.max(0,Math.min(maxX,drag.left+dx)),y=Math.max(0,Math.min(maxY,drag.top+dy));b.style.left=(x/drag.rect.width*100)+'%';b.style.top=(y/drag.rect.height*100)+'%';}});
+ const finishDrag=(e)=>{if(!drag)return;const wasMoved=moved;if(wasMoved){r.xPct=parseFloat(b.style.left);r.yPct=parseFloat(b.style.top);persist();}else{b.style.animationPlayState='';detail(r.id)}drag=null;if(e&&e.pointerId!==undefined){try{b.releasePointerCapture(e.pointerId)}catch(_){}}};
+ b.addEventListener('pointerup',finishDrag);b.addEventListener('pointercancel',e=>{if(drag){drag=null;b.style.animationPlayState=''}});$('floating').append(b);
+ const card=document.createElement('button');card.className='record';
+ if(r.image){const im=document.createElement('img');im.src=r.image;card.append(im)}else{const im=document.createElement('div');im.style='height:105px;display:grid;place-items:center;font-size:30px';im.textContent=emojis[r.emotion]||'💭';card.append(im)}
+ const info=document.createElement('div');info.className='info';const strong=document.createElement('b');strong.textContent=r.emotion;const p=document.createElement('p');p.textContent=r.thought||'그림으로 남긴 마음';info.append(strong,p);card.append(info);card.onclick=()=>detail(r.id);$('records').append(card);
+ });
+}
+function renderBundleUI(){
+ const chips=$('bundleChips');chips.innerHTML='';
+ const all=document.createElement('button');all.className='tool'+(bundleFilter==='all'?' active':'');all.textContent='전체 감정';all.onclick=()=>{bundleFilter='all';render()};chips.append(all);
+ bundles.forEach(bundle=>{const b=document.createElement('button');b.className='tool'+(bundleFilter===bundle.id?' active':'');b.textContent='🎒 '+bundle.name+' ('+records.filter(r=>r.bundleId===bundle.id).length+')';b.onclick=()=>{bundleFilter=bundle.id;render()};chips.append(b)});
+
+}
+$('saveBundleAssignment').onclick=()=>{const r=records.find(x=>String(x.id)===String(current));if(!r)return;r.bundleId=$('assignBundle').value||'';persist();render();detail(r.id)};
+$('addBundle').onclick=()=>{const name=prompt('새 감정 보따리의 이름을 정해주세요.');if(!name||!name.trim())return;const clean=name.trim();if(bundles.some(x=>x.name===clean)){alert('이미 같은 이름의 보따리가 있어요.');return}bundles.push({id:'bundle-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),name:clean});persist();render()};
+function detail(id){current=id;const r=records.find(x=>x.id===id);const box=$('detailContent');box.innerHTML='';const h=document.createElement('b');h.textContent=(emojis[r.emotion]||'💭')+' '+r.emotion;box.append(h);if(r.bundleId){const bundle=bundles.find(x=>x.id===r.bundleId);if(bundle){const tag=document.createElement('p');tag.textContent='🎒 '+bundle.name;tag.style='color:#718176;font-size:13px';box.append(tag)}}if(r.image){const im=document.createElement('img');im.src=r.image;im.style='display:block;max-width:100%;max-height:250px;object-fit:contain;margin:12px auto';box.append(im)}const p=document.createElement('p');p.style='white-space:pre-wrap;line-height:1.7;font-size:14px';p.textContent=r.thought||'글로 남긴 이야기는 없습니다.';box.append(p);const sel=$('assignBundle');sel.innerHTML='<option value="">보따리에 넣지 않기</option>';bundles.forEach(bundle=>{const o=document.createElement('option');o.value=bundle.id;o.textContent='🎒 '+bundle.name;sel.append(o)});sel.value=r.bundleId||'';show('detailModal')}
+function updateHistoryButtons(){
+ $('undo').disabled=undoIndex<=0;$('redo').disabled=undoIndex>=undoStack.length-1;
+ $('undo').style.opacity=$('undo').disabled?'.45':'1';$('redo').style.opacity=$('redo').disabled?'.45':'1';
+}
+function captureCanvas(){return ctx.getImageData(0,0,640,420)}
+function restoreCanvas(data){ctx.putImageData(data,0,0)}
+function commitCanvas(){
+ const shot=captureCanvas(),last=undoStack[undoIndex];
+ if(last&&last.data.every((v,i)=>v===shot.data[i]))return;
+ undoStack=undoStack.slice(0,undoIndex+1);undoStack.push(shot);
+ if(undoStack.length>26)undoStack.shift();
+ undoIndex=undoStack.length-1;updateHistoryButtons();
+}
+function resetCanvas(){ctx.clearRect(0,0,640,420);undoStack=[captureCanvas()];undoIndex=0;updateHistoryButtons()}
+function undoCanvas(){if(undoIndex<=0)return;undoIndex--;restoreCanvas(undoStack[undoIndex]);updateHistoryButtons()}
+function redoCanvas(){if(undoIndex>=undoStack.length-1)return;undoIndex++;restoreCanvas(undoStack[undoIndex]);updateHistoryButtons()}
+function choose(t){tool=t;document.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('active',b.dataset.tool===t))}
+function point(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*640/r.width,y:(e.clientY-r.top)*420/r.height}}
+function flood(x,y,color){const a=ctx.getImageData(0,0,640,420),d=a.data,w=640,h=420,ix=Math.floor(x),iy=Math.floor(y),st=(iy*w+ix)*4,target=[d[st],d[st+1],d[st+2],d[st+3]],hex=color.slice(1),fill=[0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)).concat(255);if(target.every((v,i)=>v===fill[i]))return;const stack=[[ix,iy]],seen=new Uint8Array(w*h);let n=0;while(stack.length&&n<250000){const [px,py]=stack.pop();if(px<0||py<0||px>=w||py>=h)continue;const q=py*w+px;if(seen[q])continue;seen[q]=1;const k=q*4;if(Math.abs(d[k]-target[0])+Math.abs(d[k+1]-target[1])+Math.abs(d[k+2]-target[2])+Math.abs(d[k+3]-target[3])>30)continue;d.set(fill,k);n++;stack.push([px+1,py],[px-1,py],[px,py+1],[px,py-1])}ctx.putImageData(a,0,0)}
+let drawing=false;canvas.addEventListener('pointerdown',e=>{e.preventDefault();const p=point(e);if(tool==='picker'){const d=ctx.getImageData(p.x|0,p.y|0,1,1).data;if(d[3])$('color').value='#'+[...d].slice(0,3).map(v=>v.toString(16).padStart(2,'0')).join('');choose('pen');return}if(tool==='bucket'){flood(p.x,p.y,$('color').value);commitCanvas();return}drawing=true;canvas.setPointerCapture(e.pointerId);ctx.beginPath();ctx.moveTo(p.x,p.y)});
+canvas.addEventListener('pointermove',e=>{if(!drawing)return;const p=point(e);ctx.globalCompositeOperation=tool==='eraser'?'destination-out':'source-over';ctx.strokeStyle=$('color').value;ctx.lineWidth=+$('size').value;ctx.lineCap=ctx.lineJoin='round';ctx.lineTo(p.x,p.y);ctx.stroke();ctx.globalCompositeOperation='source-over'});
+canvas.addEventListener('pointerup',()=>{if(drawing){drawing=false;commitCanvas()}});canvas.addEventListener('pointercancel',()=>{if(drawing){drawing=false;commitCanvas()}});canvas.addEventListener('lostpointercapture',()=>{if(drawing){drawing=false;commitCanvas()}});
+$('aboutBtn').onclick=()=>show('aboutModal');$('aboutX').onclick=()=>hide('aboutModal');$('aboutDone').onclick=()=>hide('aboutModal');$('aboutModal').addEventListener('click',e=>{if(e.target===$('aboutModal'))hide('aboutModal')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')['aboutModal','editModal','detailModal'].forEach(hide)});
+function openEditor(mode){show('editModal');$('writePanel').style.display=mode==='write'?'block':'none';$('paintPanel').style.display=mode==='paint'?'block':'none';$('editTitle').textContent=mode==='paint'?'투명 배경으로 그림 그리기':'감정 기록하기'}
+$('writeBtn').onclick=()=>{image='';transparent=false;$('thought').value='';$('otherEmotion').value='';$('upload').value='';$('preview').style.display='none';emotion='행복';document.querySelectorAll('[data-em]').forEach(b=>b.classList.toggle('active',b.dataset.em===emotion));openEditor('write')};
+$('paintBtn').onclick=()=>{resetCanvas();openEditor('paint')};$('drawFromWrite').onclick=()=>{hide('editModal');resetCanvas();openEditor('paint')};
+$('useDrawing').onclick=()=>{ctx.globalCompositeOperation='source-over';const png=canvas.toDataURL('image/png');image=png;transparent=true;$('preview').src=png;$('preview').style.display='block';$('preview').style.background='repeating-conic-gradient(#eee 0% 25%,#fff 0% 50%) 50% / 16px 16px';openEditor('write')};
+$('upload').onchange=e=>{const f=e.target.files[0];if(!f||!f.type.startsWith('image/'))return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas'),s=Math.min(1,900/im.width,900/im.height);c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);image=c.toDataURL('image/jpeg',.8);transparent=false;$('preview').style.background='white';$('preview').src=image;$('preview').style.display='block'};im.src=rd.result};rd.readAsDataURL(f)};
+document.querySelectorAll('[data-em]').forEach(b=>b.onclick=()=>{emotion=b.dataset.em;$('otherEmotion').value='';document.querySelectorAll('[data-em]').forEach(x=>x.classList.toggle('active',x===b))});
+$('saveRecord').onclick=()=>{const e=$('otherEmotion').value.trim()||emotion,t=$('thought').value.trim();if(!image&&!t){alert('감정이나 그림을 남겨주세요.');return}records.unshift({id:Date.now()+'-'+Math.random(),emotion:e,thought:t,image,transparent,themeId:theme,bundleId:'',date:new Date().toLocaleDateString('ko-KR')});persist();render();hide('editModal')};
+$('editX').onclick=()=>hide('editModal');$('detailX').onclick=$('detailDone').onclick=()=>hide('detailModal');$('deleteRecord').onclick=(e)=>{e.preventDefault();e.stopPropagation();if(current===null)return;records=records.filter(r=>String(r.id)!==String(current));persist();render();hide('detailModal');current=null;};
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>choose(b.dataset.tool));$('undo').onclick=e=>{e.preventDefault();e.stopPropagation();undoCanvas()};$('redo').onclick=e=>{e.preventDefault();e.stopPropagation();redoCanvas()};$('clearCanvas').onclick=()=>{if(confirm('그림을 새로 시작할까요?'))resetCanvas()};
+$('theme').onchange=()=>{
+ const selected=$('theme').value;
+ $('customPanel').classList.remove('show');theme=selected;bundleFilter='all';applyTheme();
+};
+$('newThemeBtn').onclick=()=>{$('customPanel').classList.toggle('show');$('themeName').focus()};
+$('deleteTheme').onclick=()=>{
+ const selected=getTheme(theme);if(!selected)return;
+ if(!confirm('「'+selected.name+'」 테마를 삭제할까요? 이 테마에 있던 감정 기록은 초원으로 옮겨집니다.'))return;
+ records.forEach(r=>{if(r.themeId===selected.id){r.themeId='grass';r.xPct=null;r.yPct=null}});
+ customThemes=customThemes.filter(t=>t.id!==selected.id);theme='grass';bundleFilter='all';populateThemes();$('theme').value='grass';persist();applyTheme();
+};
+$('resetAll').onclick=()=>{
+ if(!confirm('모든 감정 기록, 나만의 테마, 보따리를 전부 삭제하고 초기화할까요? 이 작업은 되돌릴 수 없습니다.'))return;
+ records=[];customThemes=[];bundles=[];theme='grass';bundleFilter='all';current=null;
+ ['emotionGardenRecords','emotionGardenThemes','emotionGardenBundles','emotionGardenTheme'].forEach(k=>localStorage.removeItem(k));
+ populateThemes();$('theme').value='grass';$('customPanel').classList.remove('show');persist();applyTheme();
+};
+$('saveTheme').onclick=()=>{
+ const name=$('themeName').value.trim();
+ if(!name){alert('테마 이름을 입력해 주세요.');$('themeName').focus();return}
+ const id='custom-'+Date.now();
+ customThemes.push({id,name,color:$('themeColor').value});
+ theme=id;populateThemes();$('theme').value=id;$('themeName').value='';
+ $('customPanel').classList.remove('show');persist();applyTheme();
+};
+$('theme').value='grass';populateThemes();applyTheme();choose('pen');
+initCloudAuth();
+})();
+</script></body></html>
