@@ -113,7 +113,7 @@ async function loadCloud(){
  const {data,error}=await supabase.from('emotion_garden_data').select('records,custom_themes,bundles').eq('user_id',authSession.user.id).maybeSingle();
  if(error){console.error(error);setSyncStatus('클라우드 불러오기 실패: Supabase 설정/RLS를 확인해 주세요.');isLoadingCloud=false;return}
  if(data){const cloudRecords=Array.isArray(data.records)?data.records:[];const cloudThemes=Array.isArray(data.custom_themes)?data.custom_themes:[];const cloudBundles=Array.isArray(data.bundles)?data.bundles:[];if(guestMode){const ids=new Set(cloudRecords.map(r=>String(r.id)));records=[...cloudRecords,...records.filter(r=>!ids.has(String(r.id)))];const themeIds=new Set(cloudThemes.map(t=>String(t.id)));customThemes=[...cloudThemes,...customThemes.filter(t=>!themeIds.has(String(t.id)))];const bundleIds=new Set(cloudBundles.map(b=>String(b.id)));bundles=[...cloudBundles,...bundles.filter(b=>!bundleIds.has(String(b.id)))];guestMode=false;}else{records=cloudRecords;customThemes=cloudThemes;bundles=cloudBundles;}records.forEach(r=>{if(!r.themeId)r.themeId='grass'});localStorage.setItem('emotionGardenRecords',JSON.stringify(records));localStorage.setItem('emotionGardenThemes',JSON.stringify(customThemes));localStorage.setItem('emotionGardenBundles',JSON.stringify(bundles));}
- else{isLoadingCloud=false;await saveCloud();isLoadingCloud=true;}
+ else{isLoadingCloud=false;await saveCloud();isLoadingCloud=true;guestMode=false;}
  isLoadingCloud=false;populateThemes();$('theme').value=customThemes.some(t=>t.id===theme)?theme:'grass';if(!$('theme').value)theme='grass';else theme=$('theme').value;applyTheme();render();if(guestMode===false&&authSession){setSyncStatus('☁️ 클라우드 동기화 완료');if(data)await saveCloud()}else setSyncStatus('☁️ 클라우드 동기화 완료');
 }
 async function initCloudAuth(){
@@ -142,7 +142,7 @@ async function submitAuth(){
  btn.disabled=false;btn.textContent=authMode==='signup'?'계정 만들기':'로그인';
 }
 $('loginTab').onclick=()=>switchAuthMode('login');$('signupTab').onclick=()=>switchAuthMode('signup');$('authSubmit').onclick=submitAuth;
-$('guestEnter').onclick=()=>{guestMode=true;$('authGate').classList.add('hidden');$('authStatus').textContent='게스트로 이용 중';setSyncStatus('이 기기에만 저장됩니다. 로그인하면 다른 기기와 동기화할 수 있어요.')};
+$('guestEnter').onclick=()=>{guestMode=true;$('authGate').classList.add('hidden');$('openAuthBtn').style.display='inline-flex';$('authStatus').textContent='게스트로 이용 중';setSyncStatus('이 기기에만 저장됩니다. 로그인하면 다른 기기와 동기화할 수 있어요.')};
 $('openAuthBtn').onclick=()=>{guestMode=false;switchAuthMode('login');$('authGate').classList.remove('hidden');$('authEmail').focus()};
 
 $('authEmail').addEventListener('keydown',e=>{if(e.key==='Enter')submitAuth()});$('authPassword').addEventListener('keydown',e=>{if(e.key==='Enter')submitAuth()});
