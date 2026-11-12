@@ -252,7 +252,7 @@ if(communityMode==='group'){
  };
  box.append(card);
  });
- }if(communityMode==='feed'){
+ }else if(communityMode==='feed'){
  const {data,error}=await supabase.from('emotion_shares').select('id,snapshot,allow_encouragement,created_at').eq('visibility','public').eq('active',true).order('created_at',{ascending:false}).limit(50);
  if(error){box.textContent='공개 감정을 불러오지 못했어요: '+error.message;return}
  box.innerHTML='';
