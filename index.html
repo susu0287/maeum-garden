@@ -35,13 +35,13 @@ button,select,input,textarea{font:inherit}button{cursor:pointer;border:0}.btn{bo
 <body><main class="app">
 <header class="top"><div><div class="kicker">MY LITTLE EMOTION GARDEN</div><div class="brand">마음의 정원 🌱</div><div class="sub">오늘의 마음을 자유롭게 피워보세요.</div></div>
 <button class="btn" id="communityBtn">🌷 모두의 정원</button><button class="btn bubblebtn" id="aboutBtn" aria-label="마음의 정원 소개"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-2 2v-9.5a7.5 7.5 0 0 1 7.5-7.5h2A7.5 7.5 0 0 1 20 11.5Z"/></svg>소개</button></header>
-<div class="authbar" id="authBar"><span class="authstatus" id="authStatus">로그인되지 않았어요.</span><button class="auth-quiet" id="signOutBtn" style="display:none" type="button">↪ 로그아웃</button><span id="syncStatus">로그인 전: 이 기기에만 저장됩니다.</span></div>
+<div class="authbar" id="authBar"><span class="authstatus" id="authStatus">로그인되지 않았어요.</span><button class="auth-quiet" id="openAuthBtn" style="display:none" type="button">로그인 / 계정 연결</button><button class="auth-quiet" id="signOutBtn" style="display:none" type="button">↪ 로그아웃</button><span id="syncStatus">로그인 전: 이 기기에만 저장됩니다.</span></div>
 <div id="authGate" class="auth-gate"><div class="auth-card"><div class="auth-mark">🌱</div><h1>마음의 정원</h1><p class="auth-lead">나의 마음을 안전하게 기록하고, 다른 기기에서도 이어가세요.</p>
 <div id="authFormPane"><div class="auth-tabs"><button type="button" id="loginTab" class="active">로그인</button><button type="button" id="signupTab">회원가입</button></div>
 <label for="authEmail">이메일 주소</label><input id="authEmail" type="email" autocomplete="email" placeholder="이메일 주소">
 <label for="authPassword">비밀번호</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="비밀번호">
 <div id="confirmWrap" style="display:none"><label for="authPasswordConfirm">비밀번호 확인</label><input id="authPasswordConfirm" type="password" autocomplete="new-password" placeholder="비밀번호를 다시 입력"></div>
-<button type="button" id="authSubmit" class="auth-submit">로그인</button><button type="button" id="forgotPassword" class="auth-link">비밀번호를 잊으셨나요?</button>
+<button type="button" id="authSubmit" class="auth-submit">로그인</button><button type="button" id="guestEnter" class="auth-link" style="font-size:14px;text-decoration:none;margin-top:16px">로그인 없이 둘러보기</button><button type="button" id="forgotPassword" class="auth-link">비밀번호를 잊으셨나요?</button>
 <p id="authMessage" class="auth-message" aria-live="polite"></p></div>
 <div id="recoveryPane" style="display:none"><h2>새 비밀번호 설정</h2><p>새 비밀번호를 입력해 주세요.</p><label for="newPassword">새 비밀번호</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="새 비밀번호"><label for="newPasswordConfirm">새 비밀번호 확인</label><input id="newPasswordConfirm" type="password" autocomplete="new-password" placeholder="한 번 더 입력"><button type="button" id="saveNewPassword" class="auth-submit">비밀번호 변경</button><p id="recoveryMessage" class="auth-message" aria-live="polite"></p></div>
 <p class="auth-foot">기존 이메일 로그인 계정도 같은 이메일로 비밀번호를 설정하면 기존 감정 기록을 그대로 이어갈 수 있어요.</p></div></div>
@@ -94,14 +94,15 @@ async function saveCloud(){
  const {error}=await supabase.from('emotion_garden_data').upsert(payload,{onConflict:'user_id'});
  if(error){console.error(error);setSyncStatus('클라우드 저장 실패: 연결 설정을 확인해 주세요.');return false}else{setSyncStatus('☁️ 클라우드에 안전하게 저장됨');return true}
 }
-let authMode='login',recoveryMode=location.hash.includes('type=recovery');
+let authMode='login',recoveryMode=location.hash.includes('type=recovery'),guestMode=false;
 function setAuthMessage(message){$('authMessage').textContent=message}
 function switchAuthMode(mode){authMode=mode;$('loginTab').classList.toggle('active',mode==='login');$('signupTab').classList.toggle('active',mode==='signup');$('confirmWrap').style.display=mode==='signup'?'block':'none';$('authPassword').autocomplete=mode==='signup'?'new-password':'current-password';$('authSubmit').textContent=mode==='signup'?'계정 만들기':'로그인';$('forgotPassword').style.display=mode==='signup'?'none':'block';setAuthMessage('')}
 function updateAuthUI(){
  const signed=!!authSession;
  $('signOutBtn').style.display=signed?'inline-flex':'none';
+ $('openAuthBtn').style.display=(!signed&&supabase&&guestMode)?'inline-flex':'none';
  $('authStatus').textContent=signed?'로그인 중: '+(authSession.user.email||'이메일 계정'):'로그인되지 않았어요.';
- $('authGate').classList.toggle('hidden',!supabase?true:(signed&&!recoveryMode));
+ $('authGate').classList.toggle('hidden',!supabase?true:(signed&&!recoveryMode)||guestMode);
  $('authFormPane').style.display=recoveryMode?'none':'block';
  $('recoveryPane').style.display=recoveryMode?'block':'none';
  setSyncStatus(signed?'☁️ 클라우드 동기화 연결됨':'로그인 전: 이 기기에만 저장됩니다.');
@@ -111,9 +112,9 @@ async function loadCloud(){
  isLoadingCloud=true;setSyncStatus('클라우드 기록 불러오는 중…');
  const {data,error}=await supabase.from('emotion_garden_data').select('records,custom_themes,bundles').eq('user_id',authSession.user.id).maybeSingle();
  if(error){console.error(error);setSyncStatus('클라우드 불러오기 실패: Supabase 설정/RLS를 확인해 주세요.');isLoadingCloud=false;return}
- if(data){records=Array.isArray(data.records)?data.records:[];customThemes=Array.isArray(data.custom_themes)?data.custom_themes:[];bundles=Array.isArray(data.bundles)?data.bundles:[];records.forEach(r=>{if(!r.themeId)r.themeId='grass'});localStorage.setItem('emotionGardenRecords',JSON.stringify(records));localStorage.setItem('emotionGardenThemes',JSON.stringify(customThemes));localStorage.setItem('emotionGardenBundles',JSON.stringify(bundles));}
+ if(data){const cloudRecords=Array.isArray(data.records)?data.records:[];const cloudThemes=Array.isArray(data.custom_themes)?data.custom_themes:[];const cloudBundles=Array.isArray(data.bundles)?data.bundles:[];if(guestMode){const ids=new Set(cloudRecords.map(r=>String(r.id)));records=[...cloudRecords,...records.filter(r=>!ids.has(String(r.id)))];const themeIds=new Set(cloudThemes.map(t=>String(t.id)));customThemes=[...cloudThemes,...customThemes.filter(t=>!themeIds.has(String(t.id)))];const bundleIds=new Set(cloudBundles.map(b=>String(b.id)));bundles=[...cloudBundles,...bundles.filter(b=>!bundleIds.has(String(b.id)))];guestMode=false;}else{records=cloudRecords;customThemes=cloudThemes;bundles=cloudBundles;}records.forEach(r=>{if(!r.themeId)r.themeId='grass'});localStorage.setItem('emotionGardenRecords',JSON.stringify(records));localStorage.setItem('emotionGardenThemes',JSON.stringify(customThemes));localStorage.setItem('emotionGardenBundles',JSON.stringify(bundles));}
  else{isLoadingCloud=false;await saveCloud();isLoadingCloud=true;}
- isLoadingCloud=false;populateThemes();$('theme').value=customThemes.some(t=>t.id===theme)?theme:'grass';if(!$('theme').value)theme='grass';else theme=$('theme').value;applyTheme();render();setSyncStatus('☁️ 클라우드 동기화 완료');
+ isLoadingCloud=false;populateThemes();$('theme').value=customThemes.some(t=>t.id===theme)?theme:'grass';if(!$('theme').value)theme='grass';else theme=$('theme').value;applyTheme();render();if(guestMode===false&&authSession){setSyncStatus('☁️ 클라우드 동기화 완료');if(data)await saveCloud()}else setSyncStatus('☁️ 클라우드 동기화 완료');
 }
 async function initCloudAuth(){
  const cfg=window.MAEUM_SUPABASE_CONFIG||{};
@@ -141,6 +142,9 @@ async function submitAuth(){
  btn.disabled=false;btn.textContent=authMode==='signup'?'계정 만들기':'로그인';
 }
 $('loginTab').onclick=()=>switchAuthMode('login');$('signupTab').onclick=()=>switchAuthMode('signup');$('authSubmit').onclick=submitAuth;
+$('guestEnter').onclick=()=>{guestMode=true;$('authGate').classList.add('hidden');$('authStatus').textContent='게스트로 이용 중';setSyncStatus('이 기기에만 저장됩니다. 로그인하면 다른 기기와 동기화할 수 있어요.')};
+$('openAuthBtn').onclick=()=>{guestMode=false;switchAuthMode('login');$('authGate').classList.remove('hidden');$('authEmail').focus()};
+
 $('authEmail').addEventListener('keydown',e=>{if(e.key==='Enter')submitAuth()});$('authPassword').addEventListener('keydown',e=>{if(e.key==='Enter')submitAuth()});
 $('forgotPassword').onclick=async()=>{const email=$('authEmail').value.trim();if(!email){setAuthMessage('비밀번호 재설정 메일을 받을 이메일 주소를 먼저 입력해 주세요.');$('authEmail').focus();return}const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.href.split('#')[0]});setAuthMessage(error?'메일을 보내지 못했어요: '+error.message:'비밀번호 재설정 링크를 이메일로 보냈어요. 메일의 링크를 열고 새 비밀번호를 설정해 주세요.')};
 $('saveNewPassword').onclick=async()=>{const p=$('newPassword').value,q=$('newPasswordConfirm').value;if(p.length<6){$('recoveryMessage').textContent='새 비밀번호는 6자 이상이어야 해요.';return}if(p!==q){$('recoveryMessage').textContent='비밀번호가 서로 달라요.';return}const {error}=await supabase.auth.updateUser({password:p});if(error){$('recoveryMessage').textContent='변경하지 못했어요: '+error.message;return}recoveryMode=false;history.replaceState(null,'',location.pathname+location.search);$('recoveryMessage').textContent='비밀번호가 변경됐어요. 마음의 정원으로 이동합니다.';authSession=(await supabase.auth.getSession()).data.session;updateAuthUI();if(authSession)await loadCloud()};
