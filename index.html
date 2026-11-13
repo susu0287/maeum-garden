@@ -185,7 +185,7 @@ function render(){
 function renderBundleUI(){
  const chips=$('bundleChips');chips.innerHTML='';
  const all=document.createElement('button');all.className='tool'+(bundleFilter==='all'?' active':'');all.textContent='전체 감정';all.onclick=()=>{bundleFilter='all';render()};chips.append(all);
- bundles.forEach(bundle=>{const b=document.createElement('button');b.className='tool'+(bundleFilter===bundle.id?' active':'');b.textContent='🎒 '+bundle.name+' ('+records.filter(r=>r.bundleId===bundle.id).length+')';b.onclick=()=>{bundleFilter=bundle.id;render()};chips.append(b)});
+ bundles.forEach(bundle=>{const wrap=document.createElement('span');wrap.style.cssText='display:inline-flex;align-items:center;gap:4px';const b=document.createElement('button');b.className='tool'+(bundleFilter===bundle.id?' active':'');b.textContent='🎒 '+bundle.name+' ('+records.filter(r=>r.bundleId===bundle.id).length+')';b.onclick=()=>{bundleFilter=bundle.id;render()};const del=document.createElement('button');del.type='button';del.className='danger';del.textContent='삭제';del.title=bundle.name+' 보따리 삭제';del.style.cssText='padding:6px 9px;font-size:12px';del.onclick=()=>{if(!confirm('「'+bundle.name+'」 보따리를 삭제할까요? 보따리 안의 감정 기록은 삭제되지 않고 전체 감정으로 돌아갑니다.'))return;records.forEach(record=>{if(record.bundleId===bundle.id)record.bundleId=''});bundles=bundles.filter(item=>item.id!==bundle.id);if(bundleFilter===bundle.id)bundleFilter='all';persist();render()};wrap.append(b,del);chips.append(wrap)});
 
 }
 $('saveBundleAssignment').onclick=()=>{const r=records.find(x=>String(x.id)===String(current));if(!r)return;r.bundleId=$('assignBundle').value||'';persist();render();detail(r.id)};
