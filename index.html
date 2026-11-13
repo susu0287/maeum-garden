@@ -165,7 +165,7 @@ function applyTheme(){
 function render(){
  selectedFloatId=null;$('floating').innerHTML='';$('records').innerHTML='';
  renderBundleUI();
- const visible=records.filter(r=>(r.themeId||'grass')===theme&&(bundleFilter==='all'||(r.bundleId||'')===bundleFilter));
+ const visible=records.filter(r=>bundleFilter==='all'?((r.themeId||'grass')===theme):(String(r.bundleId||'')===String(bundleFilter)));
  $('empty').style.display=visible.length?'none':'grid';
  $('count').textContent=visible.length+'개의 기록';
  visible.forEach((r,i)=>{
